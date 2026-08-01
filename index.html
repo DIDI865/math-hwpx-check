@@ -3,25 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>문항 검수대 — hwpx 구조 검사</title>
+<title>문항 검수 — hwpx 구조 검사</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <style>
   :root{
-    --paper:#EDF1F5;
-    --paper-2:#E4E9F0;
-    --card:#FFFFFF;
-    --ink:#171B26;
-    --ink-soft:#4B5468;
-    --rule:#CBD3E0;
-    --red:#C8372E;
-    --red-soft:#F6DEDC;
-    --green:#2E7D5B;
-    --green-soft:#DCEEE4;
-    --amber:#946A17;
-    --amber-soft:#F4E6C8;
-    --radius:14px;
+    --paper:#F5F2EA;
+    --paper-2:#ECE6D8;
+    --card:#FFFEFB;
+    --ink:#26241F;
+    --ink-soft:#736C5E;
+    --rule:#E1D9C7;
+    --accent:#CC7A54;
+    --accent-dark:#A85F3F;
+    --accent-soft:#F2DED0;
+    --red:#B3453A;
+    --red-soft:#F3DCD6;
+    --green:#57795E;
+    --green-soft:#E1EAE0;
+    --amber:#96702A;
+    --amber-soft:#F0E4C9;
+    --radius:16px;
   }
   *{box-sizing:border-box;}
   @media (prefers-reduced-motion: reduce){
@@ -29,11 +34,9 @@
   }
   html,body{margin:0;padding:0;}
   body{
-    background:
-      linear-gradient(var(--paper-2) 1px, transparent 1px) 0 0/100% 42px,
-      var(--paper);
+    background:var(--paper);
     color:var(--ink);
-    font-family:'Noto Sans KR', system-ui, sans-serif;
+    font-family:'Gowun Dodum', system-ui, sans-serif;
     min-height:100vh;
   }
   .wrap{max-width:920px; margin:0 auto; padding:56px 24px 96px;}
@@ -42,21 +45,20 @@
   .kicker{
     font-family:'JetBrains Mono', monospace;
     font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
-    color:var(--red); font-weight:600; margin-bottom:10px;
+    color:var(--accent-dark); font-weight:600; margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .kicker::before{
+    content:"✳"; font-size:13px; color:var(--accent);
   }
   h1{
-    font-family:'Noto Serif KR', serif; font-weight:900;
-    font-size:clamp(28px, 5vw, 44px); line-height:1.15; margin:0 0 14px;
+    font-family:'Gowun Batang', serif; font-weight:700;
+    font-size:clamp(28px, 5vw, 44px); line-height:1.25; margin:0 0 14px;
     letter-spacing:-.01em;
   }
   h1 .mark{
-    position:relative; display:inline-block; padding:0 .12em;
-  }
-  h1 .mark::after{
-    content:""; position:absolute; left:-6%; right:-6%; top:-14%; bottom:-8%;
-    border:3px solid var(--red); border-radius:50% 55% 52% 48%/58% 45% 55% 42%;
-    transform:rotate(-2deg);
-    pointer-events:none;
+    position:relative; display:inline-block; padding:0 .1em;
+    background:linear-gradient(to top, var(--accent-soft) 0%, var(--accent-soft) 34%, transparent 34%);
   }
   .lede{font-size:16px; line-height:1.7; color:var(--ink-soft); max-width:62ch;}
   .lede b{color:var(--ink); font-weight:700;}
@@ -64,10 +66,10 @@
   .panel{
     background:var(--card); border:1px solid var(--rule); border-radius:var(--radius);
     padding:28px; margin-bottom:28px;
-    box-shadow:0 1px 0 rgba(23,27,38,.03);
+    box-shadow:0 1px 2px rgba(38,36,31,.04);
   }
   .panel h2{
-    font-family:'Noto Serif KR', serif; font-size:19px; font-weight:700; margin:0 0 6px;
+    font-family:'Gowun Batang', serif; font-size:19px; font-weight:700; margin:0 0 6px;
   }
   .panel .sub{color:var(--ink-soft); font-size:14px; margin:0 0 18px;}
 
@@ -78,7 +80,7 @@
     transition:border-color .15s ease, background .15s ease;
     background:var(--paper);
   }
-  .drop:hover, .drop.drag{border-color:var(--red); background:var(--red-soft);}
+  .drop:hover, .drop.drag{border-color:var(--accent); background:var(--accent-soft);}
   .drop input{display:none;}
   .drop .big{font-weight:700; font-size:15px;}
   .drop .small{font-size:13px; color:var(--ink-soft);}
@@ -108,7 +110,7 @@
     font-family:inherit;
   }
   .runbtn:disabled{opacity:.35; cursor:not-allowed;}
-  .runbtn:not(:disabled):hover{background:var(--red);}
+  .runbtn:not(:disabled):hover{background:var(--accent-dark);}
 
   .status{font-size:13.5px; color:var(--ink-soft); margin-top:12px; min-height:1.4em;}
   .status.err{color:var(--red); font-weight:600;}
@@ -163,6 +165,90 @@
     padding:9px 13px; margin-bottom:14px;
   }
 
+  /* --- 문항 미리보기 --- */
+  .preview-panel{
+    background:var(--card); border:1px solid var(--rule); border-radius:var(--radius);
+    margin-bottom:20px; overflow:hidden;
+  }
+  .preview-panel > summary{
+    cursor:pointer; padding:16px 20px; font-family:'JetBrains Mono', monospace;
+    font-weight:600; font-size:14px; list-style:none;
+  }
+  .preview-panel > summary::-webkit-details-marker{display:none;}
+  .preview-panel > summary::before{content:"▸ "; color:var(--ink-soft);}
+  .preview-panel[open] > summary::before{content:"▾ ";}
+  .preview-list{padding:0 16px 16px;}
+  .preview-item{
+    border:1px solid var(--rule); border-radius:9px; margin-bottom:8px; overflow:hidden;
+  }
+  .preview-item > summary{
+    cursor:pointer; padding:9px 13px; font-size:13px; list-style:none;
+    background:var(--paper); display:flex; gap:10px; align-items:baseline;
+  }
+  .preview-item > summary::-webkit-details-marker{display:none;}
+  .preview-id{font-family:'JetBrains Mono', monospace; font-weight:700;}
+  .preview-body{padding:14px 16px; display:flex; flex-direction:column; gap:10px;}
+  .preview-row{display:grid; grid-template-columns:88px 1fr; gap:10px; align-items:start;}
+  .preview-label{
+    font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--ink-soft); font-weight:600; padding-top:3px;
+  }
+  .preview-value{font-size:14.5px; line-height:1.9; word-break:break-word;}
+  .preview-value .katex{font-size:1.05em;}
+  .item-img{max-width:100%; max-height:260px; display:block; margin:6px 0; border:1px solid var(--rule); border-radius:6px;}
+  .img-missing{font-size:12px; color:var(--ink-soft); font-style:italic;}
+  .eqn-fallback{background:var(--paper-2); padding:1px 5px; border-radius:4px; font-size:12.5px;}
+
+  /* --- 백틱 일괄 수정 --- */
+  .bt-panel{
+    background:var(--card); border:1px solid var(--rule); border-radius:var(--radius);
+    margin-bottom:20px; overflow:hidden;
+  }
+  .bt-panel > summary{
+    cursor:pointer; padding:16px 20px; font-family:'JetBrains Mono', monospace;
+    font-weight:600; font-size:14px; list-style:none;
+  }
+  .bt-panel > summary::-webkit-details-marker{display:none;}
+  .bt-panel > summary::before{content:"▸ "; color:var(--ink-soft);}
+  .bt-panel[open] > summary::before{content:"▾ ";}
+  .bt-controls{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:0 20px 14px; font-size:13.5px;
+  }
+  .bt-controls input[type=number]{
+    width:56px; padding:5px 8px; border:1px solid var(--rule); border-radius:6px;
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+  }
+  .bt-controls button{
+    background:var(--ink); color:#fff; border:none; border-radius:99px;
+    padding:8px 16px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .bt-controls button:hover{background:var(--accent-dark);}
+  .bt-controls .bt-toggle-all{
+    background:none; color:var(--ink-soft); border:1px solid var(--rule); font-weight:600;
+  }
+  .bt-controls .bt-toggle-all:hover{background:var(--paper); color:var(--ink);}
+  .bt-list{max-height:420px; overflow-y:auto; padding:0 20px 16px; display:flex; flex-direction:column; gap:6px;}
+  .bt-row{
+    display:flex; align-items:center; gap:10px; padding:8px 10px;
+    border:1px solid var(--rule); border-radius:8px; background:var(--paper);
+  }
+  .bt-row input[type=checkbox]{flex:none;}
+  .bt-row-body{flex:1; min-width:0;}
+  .bt-row-meta{font-size:11.5px; color:var(--ink-soft); font-family:'JetBrains Mono', monospace; margin-bottom:2px;}
+  .bt-row-eq{font-size:13.5px; word-break:break-word; font-family:'JetBrains Mono', monospace;}
+  .bt-mark{background:var(--accent-soft); color:var(--accent-dark); padding:0 2px; border-radius:3px; font-weight:700;}
+  .bt-row-target{
+    flex:none; display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--ink-soft);
+  }
+  .bt-row-target input[type=number]{
+    width:44px; padding:4px 6px; border:1px solid var(--rule); border-radius:6px;
+    font-family:'JetBrains Mono', monospace; font-size:13px; text-align:center;
+  }
+  .bt-status{font-size:13px; margin-top:8px; padding:0 20px 14px; color:var(--ink-soft);}
+  .bt-status.err{color:var(--red); font-weight:600;}
+  .bt-status.ok{color:var(--green); font-weight:600;}
+
   footer{margin-top:56px; font-size:12.5px; color:var(--ink-soft); line-height:1.7;}
   footer a{color:var(--ink-soft);}
   .foot-rule{border:none; border-top:1px solid var(--rule); margin:0 0 20px;}
@@ -173,7 +259,7 @@
 
   <header>
     <div class="kicker">HWPX 문항 구조 검수 · 100% 브라우저 내 처리</div>
-    <h1>문항 <span class="mark">검수대</span></h1>
+    <h1>문항 <span class="mark">검수</span></h1>
     <p class="lede">
       한글(HWPX) 수학 문항 파일을 브라우저에 그대로 올리면, 문항id 중복·
       쌍둥이문항 매칭·선택지 정렬·수식 표기 오류 같은 <b>구조적 오류</b>를
@@ -185,13 +271,14 @@
   <section class="panel">
     <h2>1. 파일 올리기</h2>
     <p class="sub">
-      일반문항·평가문항 두 파일을 함께 올리면 쌍둥이문항 교차 검사까지
-      자동으로 실행됩니다. 한 파일만 올려도 단일 파일 검사는 그대로 됩니다.
+      여러 단원·여러 파일을 한 번에 올려도 됩니다 — 일반문항·평가문항이
+      섞여 있어도 자동으로 구분해서, 업로드한 모든 파일을 통틀어 문항id
+      중복·쌍둥이문항 매칭을 누적으로 검사합니다.
     </p>
     <label class="drop" id="dropzone">
       <span class="icon">📄</span>
       <span class="big">.hwpx 파일을 여기로 끌어놓거나 클릭해서 선택</span>
-      <span class="small">최대 2개 (일반문항 + 평가문항)</span>
+      <span class="small">여러 개 한 번에 선택 가능</span>
       <input type="file" id="fileInput" accept=".hwpx" multiple>
     </label>
     <div class="filelist" id="fileList"></div>
@@ -204,14 +291,16 @@
   <footer>
     <hr class="foot-rule">
     <p>
-      이 페이지는 <b>구조적 검사만</b> 수행합니다 — 문항id·지식단위·난이도
+      각 파일 결과 위쪽 <b>"문항 미리보기"</b>를 펼치면 수식은 KaTeX으로,
+      hwpx 안 그림은 원본 그대로 렌더링해서 보여줍니다. 다만 이 페이지는
+      기본적으로 <b>구조적 검사</b>에 집중합니다 — 문항id·지식단위·난이도
       코드 정합성, 쌍둥이문항 1:1 매칭, 선택지 중복·정렬, 수식 명령어
-      대소문자 혼용, 공집합 기호(∅)가 일반 텍스트로 잘못 들어간 경우 등.
-      실제 수학적·논리적 정오 판단, 학습행동영역 적절성, 맞춤법 교정처럼
-      "이해하고 판단해야 하는" 항목은 이 도구가 아니라 별도의 검토가
-      필요합니다.
+      대소문자 혼용, 공집합 기호(∅)가 일반 텍스트로 잘못 들어간 경우,
+      근호(sqrt) 미간소화 등. 실제 수학적·논리적 정오 판단, 학습행동영역
+      적절성, 맞춤법 교정처럼 "이해하고 판단해야 하는" 항목은 이 도구가
+      아니라 별도의 검토가 필요합니다.
     </p>
-    <p>모든 계산은 이 브라우저 안에서만 이루어지며, 업로드한 파일은 어디로도 전송되지 않습니다.</p>
+    <p>모든 계산·렌더링은 이 브라우저 안에서만 이루어지며, 업로드한 파일은 어디로도 전송되지 않습니다.</p>
   </footer>
 </div>
 
@@ -247,7 +336,8 @@ function collectSegments(el) {
         const script = findFirstByLocalName(child, "script");
         segs.push(["eq", script ? script.textContent : ""]);
       } else if (ln === "pic") {
-        segs.push(["pic", null]);
+        const img = findFirstByLocalName(child, "img");
+        segs.push(["pic", img ? img.getAttribute("binaryItemIDRef") : null]);
       } else {
         walk(child);
       }
@@ -260,7 +350,7 @@ function segsToStr(segs) {
   return segs.map(([kind, val]) => {
     if (kind === "text") return val;
     if (kind === "eq") return `[EQ:${val}]`;
-    if (kind === "pic") return "[IMG]";
+    if (kind === "pic") return val ? `[IMG:${val}]` : "[IMG]";
     return "";
   }).join("");
 }
@@ -275,7 +365,7 @@ function isTopLevelTbl(t) {
 }
 
 // Parse one section*.xml Document into a list of items ({rows:[{label,values}]}).
-function parseSectionDoc(doc, startIndex) {
+function parseSectionDoc(doc, startIndex, docIndex, scriptsOut) {
   const root = doc.documentElement;
   const allTbls = Array.from(root.getElementsByTagNameNS(HP_NS, "tbl"));
   const tbls = allTbls.filter(isTopLevelTbl);
@@ -290,9 +380,59 @@ function parseSectionDoc(doc, startIndex) {
       const values = tcs.slice(1).map(tc => segsToStr(collectSegments(tc)));
       rows.push({ label, values });
     }
-    items.push({ table_index: startIndex + i, rows });
+    const tableIndex = startIndex + i;
+    items.push({ table_index: tableIndex, rows });
+    if (scriptsOut) {
+      const scriptNodes = Array.from(t.getElementsByTagNameNS(HP_NS, "script"));
+      for (const node of scriptNodes) {
+        scriptsOut.push({ docIndex, node, tableIndex });
+      }
+    }
   });
   return items;
+}
+
+async function getManifest(zip) {
+  const hpfPath = "Contents/content.hpf";
+  if (!zip.files[hpfPath]) return {};
+  const text = await zip.files[hpfPath].async("text");
+  const doc = new DOMParser().parseFromString(text, "application/xml");
+  const manifest = {};
+  const all = doc.getElementsByTagName("*");
+  for (let i = 0; i < all.length; i++) {
+    const el = all[i];
+    if (el.localName === "item") {
+      const id = el.getAttribute("id");
+      const href = el.getAttribute("href");
+      if (id && href) manifest[id] = href;
+    }
+  }
+  return manifest;
+}
+
+function mimeForPath(p) {
+  const ext = (p.split(".").pop() || "").toLowerCase();
+  if (ext === "bmp") return "image/bmp";
+  if (ext === "png") return "image/png";
+  if (ext === "jpg" || ext === "jpeg") return "image/jpeg";
+  if (ext === "gif") return "image/gif";
+  return "application/octet-stream";
+}
+
+async function extractImageUrls(zip, manifest) {
+  const urls = {};
+  for (const [id, href] of Object.entries(manifest)) {
+    const zf = zip.files[href];
+    if (!zf) continue;
+    try {
+      const blob = await zf.async("blob");
+      const typed = blob.slice(0, blob.size, mimeForPath(href));
+      urls[id] = URL.createObjectURL(typed);
+    } catch {
+      // skip images we can't read; rendering will show a placeholder instead
+    }
+  }
+  return urls;
 }
 
 async function extractHwpx(file) {
@@ -309,15 +449,318 @@ async function extractHwpx(file) {
     throw new Error("Contents/section*.xml을 찾을 수 없습니다 — 유효한 .hwpx 파일이 맞는지 확인해 주세요.");
   }
   const parser = new DOMParser();
+  const sectionDocs = []; // { path, doc } - kept live for the backtick-fix re-download feature
+  const scriptNodes = []; // { docIndex, node, tableIndex } - every <hp:script> in the file
   let items = [];
   for (const path of sectionPaths) {
     const xmlText = await zip.files[path].async("text");
     const doc = parser.parseFromString(xmlText, "application/xml");
     const perr = doc.getElementsByTagName("parsererror")[0] || (!doc.documentElement ? true : null);
     if (perr) throw new Error(`${path} 파싱 실패: XML이 손상되었을 수 있습니다.`);
-    items = items.concat(parseSectionDoc(doc, items.length));
+    const docIndex = sectionDocs.length;
+    sectionDocs.push({ path, doc });
+    items = items.concat(parseSectionDoc(doc, items.length, docIndex, scriptNodes));
   }
-  return { name: file.name.replace(/\.hwpx$/i, ""), items };
+  const manifest = await getManifest(zip);
+  const imageUrls = await extractImageUrls(zip, manifest);
+
+  // Backtick occurrences: one entry per individual contiguous run of
+  // backticks (e.g. "A,`B,`C" has two separate runs, between A/B and B/C) -
+  // each is independently selectable and independently editable, since the
+  // right spacing can differ from one spot to the next within the same
+  // equation.
+  const backtickOccurrences = [];
+  scriptNodes.forEach((s, nodeIdx) => {
+    const text = s.node.textContent || "";
+    const re = /`+/g;
+    let m, runIdx = 0;
+    while ((m = re.exec(text))) {
+      const start = m.index, end = m.index + m[0].length;
+      backtickOccurrences.push({
+        occId: `bt${nodeIdx}_${runIdx++}`,
+        node: s.node,
+        tableIndex: s.tableIndex,
+        start, end, length: m[0].length,
+        fullScript: text,
+      });
+    }
+  });
+
+  return {
+    name: file.name.replace(/\.hwpx$/i, ""),
+    items, imageUrls,
+    _zip: zip, _sectionDocs: sectionDocs, backtickOccurrences,
+  };
+}
+
+// Mutates the live <hp:script> nodes for the given occurrences, each
+// collapsed to its own individually-specified `targetCount` of backticks
+// (occurrences are `{node, start, end, targetCount}`, e.g. selected rows
+// from the fix-list UI - each row can have a different target count).
+// Grouped by node internally; within one node, rewritten back-to-front (by
+// string position) so earlier offsets stay valid while later ones change.
+function applyBacktickFixes(occurrences) {
+  const byNode = new Map();
+  for (const occ of occurrences) {
+    if (!byNode.has(occ.node)) byNode.set(occ.node, []);
+    byNode.get(occ.node).push(occ);
+  }
+  for (const [node, occs] of byNode) {
+    let text = node.textContent || "";
+    const sorted = [...occs].sort((a, b) => b.start - a.start);
+    for (const occ of sorted) {
+      const replacement = "`".repeat(Math.max(0, occ.targetCount));
+      text = text.slice(0, occ.start) + replacement + text.slice(occ.end);
+    }
+    node.textContent = text;
+  }
+}
+
+// Re-serializes every modified section document back into the file's zip
+// and produces a new .hwpx Blob for download. Only call after
+// applyBacktickFixes (or any other live-DOM edit) - this does not itself
+// change anything, it just packages up whatever is currently in the DOM.
+async function regenerateHwpxBlob(data) {
+  const serializer = new XMLSerializer();
+  for (const { path, doc } of data._sectionDocs) {
+    let xml = serializer.serializeToString(doc);
+    if (!xml.startsWith("<?xml")) xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + xml;
+    data._zip.file(path, xml);
+  }
+  return data._zip.generateAsync({ type: "blob" });
+}
+
+function triggerDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+
+/* ---------------------------------------------------------------------
+ * HWP equation-script -> LaTeX converter, for the item preview panel.
+ * Ported from the companion desktop review tool's
+ * src/lib/hwpx/eqnToLatex.ts (same author, same corpus) so previews match
+ * what that tool renders. Unknown tokens pass through as literal text
+ * rather than being silently dropped.
+ * ------------------------------------------------------------------- */
+const EQN_PREFIX_WRAP_KEYWORDS = {
+  SQRT: "sqrt", BAR: "overline", HAT: "hat", TILDE: "tilde", VEC: "vec",
+  DOT: "dot", DDOT: "ddot", ACUTE: "acute", GRAVE: "grave", UNDER: "underline",
+};
+const EQN_KEYWORD_MAP = {
+  TIMES: "\\times", DIV: "\\div", CDOT: "\\cdot", PI: "\\pi", INFTY: "\\infty",
+  INF: "\\infty", SUM: "\\sum", INT: "\\int", LIM: "\\lim", LOG: "\\log",
+  LN: "\\ln", SIN: "\\sin", COS: "\\cos", TAN: "\\tan", NEQ: "\\neq",
+  LE: "\\le", LEQ: "\\le", GE: "\\ge", GEQ: "\\ge", APPROX: "\\approx",
+  PARTIAL: "\\partial", ALPHA: "\\alpha", BETA: "\\beta", GAMMA: "\\gamma",
+  DELTA: "\\delta", EPSILON: "\\epsilon", THETA: "\\theta", LAMBDA: "\\lambda",
+  MU: "\\mu", SIGMA: "\\sigma", PHI: "\\phi", OMEGA: "\\omega",
+  "+-": "\\pm", "-+": "\\mp", RARROW: "\\rightarrow", LARROW: "\\leftarrow",
+  CDOTS: "\\cdots", DDOTS: "\\ddots", VDOTS: "\\vdots", LDOTS: "\\ldots",
+  ANGLE: "\\angle", VERT: "|", UNION: "\\cup", CUP: "\\cup", CAP: "\\cap",
+  DET: "\\det", EXP: "\\exp", MIN: "\\min", MAX: "\\max", GCD: "\\gcd",
+  LCM: "\\operatorname{lcm}", SEC: "\\sec", CSC: "\\csc", COT: "\\cot",
+  ARCSIN: "\\arcsin", ARCCOS: "\\arccos", ARCTAN: "\\arctan", FORALL: "\\forall",
+  EXISTS: "\\exists", THEREFORE: "\\therefore", BECAUSE: "\\because",
+  PARALLEL: "\\parallel", PERP: "\\perp", CONG: "\\cong", PROPTO: "\\propto",
+  NABLA: "\\nabla",
+  SMALLINTER: "\\cap", SMALLUNION: "\\cup", SMALLPROD: "\\prod", SUBSET: "\\subset",
+  DEG: "^\\circ",
+};
+const EQN_SUSPECTED_MISSING_KEYWORD_RE = new RegExp(`^(?:${["matrix", "mod", "dyad"].join("|")})\\d*$`, "i");
+const EQN_GLUED_KEYWORD_NAMES = [
+  ...Object.keys(EQN_KEYWORD_MAP).filter(k => /^[A-Za-z]+$/.test(k)),
+  ...Object.keys(EQN_PREFIX_WRAP_KEYWORDS),
+  "ROOT",
+].sort((a, b) => b.length - a.length);
+const EQN_GLUED_KEYWORD_RE = new RegExp(`^(${EQN_GLUED_KEYWORD_NAMES.join("|")})(\\d.*)$`, "i");
+const EQN_UPRIGHT_STYLE_KEYWORDS = new Set(["rm", "sf"]);
+const EQN_STYLE_KEYWORDS = new Set(["rm", "it", "bf", "sf"]);
+const EQN_DELIM_LATEX = { "|": "|", "(": "(", ")": ")", "[": "[", "]": "]", "{": "\\{", "}": "\\}", ".": "." };
+
+function eqnTokenize(script) {
+  let s = script.replace(/`/g, " ");
+  s = s.replace(/([{}^_#&])/g, " $1 ");
+  return s.split(/\s+/).filter(Boolean);
+}
+
+class EqnParser {
+  constructor(tokens) {
+    this.tokens = tokens;
+    this.pos = 0;
+    this.unrecognized = [];
+    this.suppressUnrecognized = 0;
+  }
+  peek() { return this.tokens[this.pos]; }
+  parseAtoms() {
+    const atoms = [];
+    while (this.pos < this.tokens.length) {
+      const t = this.peek();
+      if (t === "}") break;
+      if (t !== undefined && t.toUpperCase() === "OVER") {
+        this.pos++;
+        let den = this.parseAtom();
+        den = this.applyPostfix(den);
+        const num = atoms.pop();
+        if (num) atoms.push({ type: "frac", num, den }); else atoms.push(den);
+        continue;
+      }
+      if (t !== undefined && t.toUpperCase() === "DEG") {
+        this.pos++;
+        const base = atoms.pop();
+        atoms.push(base ? { type: "sup", base, exp: { type: "word", value: "\\circ" } } : { type: "word", value: "^\\circ" });
+        continue;
+      }
+      if (t !== undefined && t.toUpperCase() === "RIGHT") break;
+      let atom = this.parseAtom();
+      if ((this.peek() === "^" || this.peek() === "_") && atom.type === "word" && atom.value.length > 1 && !atom.value.startsWith("\\")) {
+        const val = atom.value;
+        let splitAt = val.length - 1;
+        if (val.endsWith(")")) {
+          let depth = 0;
+          for (let k = val.length - 1; k >= 0; k--) {
+            if (val[k] === ")") depth++;
+            else if (val[k] === "(") { depth--; if (depth === 0) { splitAt = k; break; } }
+          }
+        }
+        const prefix = val.slice(0, splitAt);
+        const base = val.slice(splitAt);
+        if (prefix) atoms.push({ type: "word", value: prefix });
+        atom = { type: "word", value: base };
+      }
+      atom = this.applyPostfix(atom);
+      atoms.push(atom);
+    }
+    return atoms;
+  }
+  atStop() {
+    const t = this.peek();
+    return t === undefined || t === "}" || t.toUpperCase() === "OVER" || t.toUpperCase() === "RIGHT" || t === "^" || t === "_";
+  }
+  applyPostfix(atom) {
+    while (this.peek() === "^" || this.peek() === "_") {
+      const op = this.peek();
+      this.pos++;
+      const exp = this.parseAtom();
+      atom = op === "^" ? { type: "sup", base: atom, exp } : { type: "sub", base: atom, sub: exp };
+    }
+    return atom;
+  }
+  parseAtom() {
+    const t = this.tokens[this.pos];
+    if (t === undefined) return { type: "word", value: "" };
+    if (t === "{") {
+      this.pos++;
+      const atoms = this.parseAtoms();
+      if (this.peek() === "}") this.pos++;
+      return atoms.length === 1 ? atoms[0] : { type: "row", items: atoms };
+    }
+    const wrapCmd = EQN_PREFIX_WRAP_KEYWORDS[t.toUpperCase()];
+    if (wrapCmd) {
+      this.pos++;
+      if (this.atStop()) return { type: "word", value: "" };
+      const arg = this.parseAtom();
+      return { type: "wrap", cmd: wrapCmd, arg };
+    }
+    if (t.toLowerCase() === "root") {
+      this.pos++;
+      if (this.suppressUnrecognized === 0) this.unrecognized.push(t);
+      return { type: "word", value: t };
+    }
+    if (EQN_GLUED_KEYWORD_RE.test(t)) {
+      this.pos++;
+      if (this.suppressUnrecognized === 0) this.unrecognized.push(t);
+      return { type: "word", value: t };
+    }
+    if (EQN_STYLE_KEYWORDS.has(t.toLowerCase())) {
+      this.pos++;
+      if (this.atStop()) return { type: "word", value: "" };
+      this.suppressUnrecognized++;
+      const arg = this.parseAtom();
+      this.suppressUnrecognized--;
+      return EQN_UPRIGHT_STYLE_KEYWORDS.has(t.toLowerCase()) ? { type: "mathrm", arg } : arg;
+    }
+    if (t.toUpperCase() === "LEFT") {
+      this.pos++;
+      const left = this.tokens[this.pos] ?? ".";
+      this.pos++;
+      const atoms = this.parseAtoms();
+      if (this.peek()?.toUpperCase() === "RIGHT") this.pos++;
+      const right = this.tokens[this.pos] ?? ".";
+      this.pos++;
+      const content = atoms.length === 1 ? atoms[0] : { type: "row", items: atoms };
+      return { type: "bracket", left, right, content };
+    }
+    if (t.toLowerCase() === "prime") {
+      this.pos++;
+      return { type: "word", value: "'" };
+    }
+    const mapped = EQN_KEYWORD_MAP[t.toUpperCase()];
+    if (mapped) {
+      this.pos++;
+      return { type: "word", value: mapped };
+    }
+    this.pos++;
+    if (this.suppressUnrecognized === 0 && EQN_SUSPECTED_MISSING_KEYWORD_RE.test(t)) this.unrecognized.push(t);
+    return { type: "word", value: t };
+  }
+}
+
+function eqnRenderNode(node) {
+  switch (node.type) {
+    case "word": return node.value;
+    case "row": return node.items.map(eqnRenderNode).join(" ");
+    case "frac": return `\\frac{${eqnRenderNode(node.num)}}{${eqnRenderNode(node.den)}}`;
+    case "sup": return `{${eqnRenderNode(node.base)}}^{${eqnRenderNode(node.exp)}}`;
+    case "sub": return `{${eqnRenderNode(node.base)}}_{${eqnRenderNode(node.sub)}}`;
+    case "wrap": return `\\${node.cmd}{${eqnRenderNode(node.arg)}}`;
+    case "mathrm": return `\\mathrm{${eqnRenderNode(node.arg)}}`;
+    case "bracket": {
+      const l = EQN_DELIM_LATEX[node.left] ?? node.left;
+      const r = EQN_DELIM_LATEX[node.right] ?? node.right;
+      return `\\left${l} ${eqnRenderNode(node.content)} \\right${r}`;
+    }
+    default: return "";
+  }
+}
+function eqnClean(s) { return s.replace(/\s+/g, " ").trim(); }
+function eqnRenderInline(script, unrecognizedOut) {
+  const tokens = eqnTokenize(script);
+  const parser = new EqnParser(tokens);
+  const atoms = parser.parseAtoms();
+  const node = atoms.length === 1 ? atoms[0] : { type: "row", items: atoms };
+  unrecognizedOut.push(...parser.unrecognized);
+  return eqnClean(eqnRenderNode(node));
+}
+// Converts one HWP equation-editor script into a LaTeX string for KaTeX.
+function eqnScriptToLatex(script) {
+  const trimmed = script.trim();
+  const unrecognized = [];
+  if (!trimmed) return { latex: "", unrecognized };
+  if (trimmed.includes("#")) {
+    const lines = trimmed.split("#").map(l => l.trim().replace(/\n/g, ""));
+    const rendered = lines.filter(l => l.length > 0).map(line => {
+      const ampIdx = line.indexOf("&");
+      if (ampIdx === -1) return eqnRenderInline(line, unrecognized);
+      const left = line.slice(0, ampIdx).trim();
+      const right = line.slice(ampIdx + 1).trim();
+      const leftLatex = left ? eqnRenderInline(left, unrecognized) : "";
+      const rightLatex = eqnRenderInline(right, unrecognized);
+      return `${leftLatex} &${rightLatex}`;
+    });
+    return { latex: `\\begin{aligned} ${rendered.join(" \\\\ ")} \\end{aligned}`, unrecognized };
+  }
+  try {
+    return { latex: eqnRenderInline(trimmed, unrecognized), unrecognized };
+  } catch {
+    return { latex: trimmed, unrecognized };
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -329,6 +772,11 @@ const UPPER_CANONICAL = [
   "SMALLPROD","SUBSET","ANGLE","DEG","INFTY","SUM","INT","LIM","PLUSMINUS",
   "APPROX","RARROW","LARROW","LEFT","RIGHT",
 ];
+// 문항id 전체 형식: [접두어 1글자] + 지식단위(예: G0C1S3A) + 변형문자(a/b/c...) + 난이도(1자리) + "-" + 일련번호
+const ITEM_ID_FULL_RE = /^[A-Za-z]([A-Z]\d+C\d+S\d+[A-Z])([a-z])(\d)-(\d+)$/;
+// 지식단위 자체 형식(예: G0C1S3A) — 과목코드(첫 글자)는 과목마다 다르므로 특정 알파벳으로 고정하지 않음
+const KNOWLEDGE_UNIT_FORMAT_RE = /^[A-Z]\d+C\d+S\d+[A-Z]$/;
+const PLACEHOLDER_RE = /(TODO|미정|수정필요|xxx|999|\?\?\?|루트)/i;
 
 function getField(item, label) {
   for (const r of item.rows) if (r.label === label) return r.values.length ? r.values[0] : "";
@@ -374,6 +822,34 @@ function extractChoiceValue(raw) {
   const m = raw.trim().match(/^\[EQ:(.*)\]$/s);
   if (!m) return null;
   return tryEvalNumber(m[1]);
+}
+
+// Best-effort "what number does this equation conclude with" - takes the
+// text after the LAST '=' sign if there is one (e.g. "...=8" -> "8"), or the
+// whole thing if there's no '=' at all (e.g. a bare "[EQ:12]" right after
+// "값은" with no equals sign), and tries to evaluate it numerically, same
+// parser as choice values. Only handles simple trailing numbers/fractions -
+// complex concluding expressions are left unparsed (returns null, and the
+// caller simply skips the comparison rather than guessing).
+function extractConcludingValue(eqStr) {
+  const parts = eqStr.split("=");
+  let tail = parts[parts.length - 1].replace(/`/g, "").trim();
+  let v = tryEvalNumber(tail);
+  if (v !== null) return v;
+  // strip a trailing CONDITION-looking parenthetical only, e.g. "5(a>0)" -> "5"
+  // (deliberately narrow - "8(5-3)" is a real multiplication, not a
+  // qualifier, and must NOT be stripped down to just "8").
+  const stripped = tail.replace(/\([a-zA-Z]\s*[<>=]\s*-?\d+\)\s*$/, "").trim();
+  return tryEvalNumber(stripped);
+}
+
+// Last non-empty 해설 field - "마지막 줄"/final explanation the person meant.
+function getLastExplanationField(item) {
+  for (const label of ["해설3", "해설2", "해설1"]) {
+    const v = getField(item, label);
+    if (v && v.trim()) return v;
+  }
+  return null;
 }
 
 // n = outside^2 * inside, with `inside` square-free and `outside` maximal.
@@ -454,11 +930,21 @@ function checkSingleFile(data) {
     duplicate_choice_values: [],
     choice_order_violations: [],
     paren_wrapped_fraction: [],
-    varnothing_literal_text: [],
     equation_case_mismatch: [],
     multi_answer_items: [],
     duplicate_twin_target: [],
     radical_not_simplified: [],
+    required_field_missing: [],
+    choice_gap: [],
+    answer_points_to_empty_choice: [],
+    answer_format_invalid: [],
+    placeholder_text: [],
+    unrecognized_equation_tokens: [],
+    difficulty_format: [],
+    knowledge_unit_format: [],
+    item_id_format: [],
+    conclusion_answer_mismatch: [],
+    duplicate_body_text: [],
   };
   const name = data.name;
   const items = data.items;
@@ -492,6 +978,25 @@ function checkSingleFile(data) {
     }
   }
 
+  // Exact-duplicate 본문 text across DIFFERENT (non-twin) items in this one
+  // file - a likely copy/paste mistake (e.g. duplicated a row and forgot to
+  // change the numbers), as opposed to twin items, which are expected to
+  // share structure but not identical wording.
+  const bodyPositions = new Map();
+  for (const it of items) {
+    const iid = getField(it, "문항id");
+    const body = getField(it, "본문");
+    if (!body || !body.trim()) continue;
+    const key = body.trim();
+    if (!bodyPositions.has(key)) bodyPositions.set(key, []);
+    bodyPositions.get(key).push(`#${it.table_index + 1} (${iid})`);
+  }
+  for (const [, refs] of bodyPositions) {
+    if (refs.length > 1) {
+      f.duplicate_body_text.push(`${refs.join(", ")} — 본문 내용이 완전히 동일함`);
+    }
+  }
+
   for (const it of items) {
     const iid = getField(it, "문항id");
     const loc = `#${it.table_index + 1} (${iid})`;
@@ -508,6 +1013,40 @@ function checkSingleFile(data) {
       }
     }
 
+    // --- 필수 필드 누락 ---
+    const bodyVal = getField(it, "본문");
+    const explAll = [getField(it, "해설1"), getField(it, "해설2"), getField(it, "해설3")];
+    if (!iid || !iid.trim()) f.required_field_missing.push(`${loc}: 문항id가 비어 있음`);
+    if (!bodyVal || !bodyVal.trim()) f.required_field_missing.push(`${loc}: 본문이 비어 있음`);
+    const answerCell = getField(it, "정답");
+    if (!answerCell || !answerCell.trim()) f.required_field_missing.push(`${loc}: 정답이 비어 있음`);
+    if (!kuCell || !kuCell.trim()) f.required_field_missing.push(`${loc}: 지식단위가 비어 있음`);
+    if (!diffCell || !diffCell.trim()) f.required_field_missing.push(`${loc}: 난이도가 비어 있음`);
+    if (!explAll.some(e => e && e.trim())) f.required_field_missing.push(`${loc}: 해설이 모두 비어 있음`);
+
+    // --- 문항id 전체 형식 검사 ---
+    if (iid && iid.trim() && !ITEM_ID_FULL_RE.test(iid.trim())) {
+      f.item_id_format.push(`${loc}: 문항id 형식이 예상 패턴([접두어1글자]+지식단위+변형문자1글자+난이도1자리+"-"+일련번호)과 다름`);
+    }
+    // --- 지식단위 자체 형식 검사 ---
+    if (kuCell && kuCell.trim() && !KNOWLEDGE_UNIT_FORMAT_RE.test(kuCell.trim())) {
+      f.knowledge_unit_format.push(`${loc}: 지식단위 형식이 예상 패턴(예: G0C1S3A)과 다름: '${kuCell}'`);
+    }
+    // --- 난이도 형식(1~5 정수) 검사 ---
+    if (diffCell && diffCell.trim()) {
+      const dn = Number(diffCell.trim());
+      if (!Number.isInteger(dn) || dn < 1 || dn > 3) {
+        f.difficulty_format.push(`${loc}: 난이도 값이 1~3 사이 정수가 아님: '${diffCell}'`);
+      }
+    }
+
+    // --- 미완성 표시(TODO 등) ---
+    for (const [label, text] of [["본문", bodyVal], ["해설1", explAll[0]]]) {
+      if (text && PLACEHOLDER_RE.test(text)) {
+        f.placeholder_text.push(`${loc} [${label}]: 미완성 표시로 보이는 텍스트가 있음`);
+      }
+    }
+
     const behavior = getField(it, "학습행동영역");
     if (behavior !== null) {
       const b = behavior.trim();
@@ -519,6 +1058,62 @@ function checkSingleFile(data) {
     const answer = getField(it, "정답");
     if (answer && !/^\d$/.test(answer.trim())) {
       f.multi_answer_items.push(`${loc}: 정답='${answer}'`);
+    }
+
+    // --- 선택지 번호 사이 공백(gap) + 정답이 가리키는 선택지가 비었는지 ---
+    const rawChoices = [1, 2, 3, 4, 5].map(i => {
+      const cv = getFieldAll(it, `선택지${i}`);
+      return cv && cv.length ? cv.join("") : "";
+    });
+    const anyChoiceFilled = rawChoices.some(c => c.trim().length > 0);
+    if (anyChoiceFilled) {
+      const gapIdx = rawChoices.findIndex((c, idx) =>
+        c.trim().length === 0 && rawChoices.slice(idx + 1).some(later => later.trim().length > 0)
+      );
+      if (gapIdx !== -1) {
+        f.choice_gap.push(`${loc}: 선택지${gapIdx + 1}이 비어 있는데 이후 선택지는 채워져 있음`);
+      }
+      if (answer) {
+        const answerParts = answer.split(",").map(s => s.trim()).filter(Boolean);
+        const invalidParts = [];
+        for (const part of answerParts) {
+          const n = Number(part);
+          if (!Number.isInteger(n) || n < 1 || n > 5) { invalidParts.push(part); continue; }
+          if (!rawChoices[n - 1] || !rawChoices[n - 1].trim()) {
+            f.answer_points_to_empty_choice.push(`${loc}: 정답이 선택지${n}을 가리키는데 해당 선택지가 비어 있음`);
+          }
+        }
+        if (invalidParts.length) {
+          f.answer_format_invalid.push(`${loc}: 정답 중 1~5 범위의 선택지 번호가 아닌 값이 있음: '${invalidParts.join(", ")}'`);
+        }
+      }
+    }
+
+    // --- 해설 마지막 결론값이 정답이 가리키는 선택지와 일치하는지 (확인 필요) ---
+    if (answer && /^\d$/.test(answer.trim())) {
+      const answerNum = parseInt(answer.trim(), 10);
+      const explText = getLastExplanationField(it);
+      if (explText) {
+        const eqMatches = [...explText.matchAll(/\[EQ:(.*?)\]/gs)];
+        // Scan from the end backward for the first equation that actually
+        // yields a parseable value - the very last [EQ:...] in the text
+        // isn't always the conclusion itself (e.g. a trailing "(단, x>0)"
+        // style note), and the conclusion may be a bare value with no "="
+        // at all (e.g. "값은 [EQ:12]이다" instead of "[EQ:x=12]").
+        let concluded = null;
+        for (let k = eqMatches.length - 1; k >= 0 && concluded === null; k--) {
+          concluded = extractConcludingValue(eqMatches[k][1]);
+        }
+        if (concluded !== null) {
+          const choiceRaw = getFieldAll(it, `선택지${answerNum}`);
+          const choiceVal = choiceRaw && choiceRaw.length ? extractChoiceValue(choiceRaw[0]) : null;
+          if (choiceVal !== null && Math.abs(concluded - choiceVal) > 1e-9) {
+            f.conclusion_answer_mismatch.push(
+              `${loc}: 해설 마지막 결론값(${concluded})이 정답인 선택지${answerNum}(${choiceVal})과 다름 — 실제로는 풀이 방식·표기 차이로 인한 오탐일 수 있으니 직접 확인 필요`
+            );
+          }
+        }
+      }
     }
 
     const vals = [];
@@ -554,17 +1149,101 @@ function checkSingleFile(data) {
       for (const { original, suggestion } of findUnsimplifiedRadicals(eq)) {
         f.radical_not_simplified.push(`${loc} [${label}]: '${original}' → '${suggestion}'로 더 간단히 나타낼 수 있음 (해설 중간 풀이 과정이면 정상일 수 있으니 확인 필요)`);
       }
-    }
-
-    for (const r of it.rows) {
-      for (const v of r.values) {
-        const plain = v.replace(/\[EQ:.*?\]/gs, "");
-        if (plain.includes("varnothing")) f.varnothing_literal_text.push(`${loc} [${r.label}]`);
+      const { unrecognized } = eqnScriptToLatex(eq);
+      for (const tok of new Set(unrecognized)) {
+        const hint = tok.toLowerCase().startsWith("root") ? ` ("root"가 아니라 "sqrt"로 써야 함)` : "";
+        f.unrecognized_equation_tokens.push(`${loc} [${label}]: 알아볼 수 없는 표현 '${tok}'${hint} — 식: ${eq}`);
       }
     }
   }
 
   return f;
+}
+
+// Generalized version of checkTwinPair for any number of uploaded files.
+// Classifies each dataset as "general-like" or "assessment-like" via
+// twinFillRatio, then checks duplicate 문항id and 쌍둥이문항 matching across
+// ALL of them combined (not just one designated pair).
+function checkAllFilesCross(datasets) {
+  const f = {
+    duplicate_ids_cross_file: [],
+    twin_not_found_in_general: [],
+    twin_missing_in_assessment: [],
+    twin_collisions: [],
+    general_has_nonempty_twin_field: [],
+    twin_ku_mismatch: [],
+    twin_difficulty_mismatch: [],
+  };
+
+  // --- 문항id 중복: 업로드된 모든 파일을 통틀어 ---
+  const idLocations = new Map(); // id -> [ "#N (파일명)", ... ]
+  for (const d of datasets) {
+    for (const it of d.items) {
+      const iid = getField(it, "문항id");
+      if (!iid) continue;
+      if (!idLocations.has(iid)) idLocations.set(iid, []);
+      idLocations.get(iid).push(`#${it.table_index + 1} (${d.name})`);
+    }
+  }
+  for (const [iid, locs] of idLocations) {
+    if (locs.length > 1) f.duplicate_ids_cross_file.push(`문항id '${iid}'가 ${locs.join(", ")}에서 중복 등장`);
+  }
+
+  // --- 일반형 / 평가형 파일 분류 ---
+  const generalSets = datasets.filter(d => twinFillRatio(d) <= 0.5);
+  const assessmentSets = datasets.filter(d => twinFillRatio(d) > 0.5);
+  const allGeneralItems = generalSets.flatMap(d => d.items.map(it => ({ it, fileName: d.name })));
+  const generalIds = new Map(); // id -> item (first one wins for consistency lookups)
+  for (const { it, fileName } of allGeneralItems) {
+    const iid = getField(it, "문항id");
+    if (iid && !generalIds.has(iid)) generalIds.set(iid, it);
+  }
+
+  const twinRefs = new Map(); // twinId -> [ "#N (id, 파일명)", ... ]
+  for (const d of assessmentSets) {
+    for (const it of d.items) {
+      const myId = getField(it, "문항id");
+      const twinId = getField(it, "쌍둥이문항");
+      if (!twinId) {
+        f.twin_missing_in_assessment.push(`#${it.table_index + 1} (${myId}, ${d.name}): 쌍둥이문항 비어있음`);
+        continue;
+      }
+      if (!twinRefs.has(twinId)) twinRefs.set(twinId, []);
+      twinRefs.get(twinId).push(`#${it.table_index + 1} (${myId}, ${d.name})`);
+      // Only flag "not found" when at least one general-like file was
+      // actually uploaded - if none was, the twin is presumably just in a
+      // file the user hasn't uploaded yet, which isn't an error by itself.
+      if (generalSets.length > 0 && !generalIds.has(twinId)) {
+        f.twin_not_found_in_general.push(`#${it.table_index + 1} (${myId}, ${d.name}) -> twin '${twinId}' 를 업로드된 일반문항 파일에서 찾을 수 없음`);
+      }
+      const twin = generalIds.get(twinId);
+      if (twin) {
+        const myKu = getField(it, "지식단위"), twinKu = getField(twin, "지식단위");
+        const myDiff = getField(it, "난이도"), twinDiff = getField(twin, "난이도");
+        if (myKu !== twinKu) {
+          f.twin_ku_mismatch.push(`#${it.table_index + 1} (${myId}, ${d.name}): 쌍둥이문항(${twinId})과 지식단위가 다름 — '${myKu}' vs '${twinKu}'`);
+        }
+        if (myDiff !== twinDiff) {
+          f.twin_difficulty_mismatch.push(`#${it.table_index + 1} (${myId}, ${d.name}): 쌍둥이문항(${twinId})과 난이도가 다름 — '${myDiff}' vs '${twinDiff}'`);
+        }
+      }
+    }
+  }
+  for (const [twinId, refs] of twinRefs) {
+    if (refs.length > 1) f.twin_collisions.push(`쌍둥이문항id '${twinId}'가 ${refs.join(", ")}에서 중복 참조됨`);
+  }
+
+  for (const d of generalSets) {
+    for (const it of d.items) {
+      const twinField = getField(it, "쌍둥이문항");
+      if (twinField) {
+        const myId = getField(it, "문항id");
+        f.general_has_nonempty_twin_field.push(`#${it.table_index + 1} (${myId}, ${d.name}): 쌍둥이문항='${twinField}' (일반문항 파일은 이 칸이 비어있어야 함)`);
+      }
+    }
+  }
+
+  return { findings: f, generalSets, assessmentSets };
 }
 
 function checkTwinPair(generalData, assessmentData) {
@@ -630,22 +1309,189 @@ const RULE_LABELS = {
   duplicate_choice_values: ["선택지 중복값", "서로 다른 두 선택지가 같은 값을 갖고 있습니다."],
   choice_order_violations: ["선택지 정렬 위반", "선택지가 오름차순도 내림차순도 아닙니다. (정답 자체는 별도로 재검산이 필요합니다)"],
   paren_wrapped_fraction: ["분수를 감싼 괄호 크기 오류", "분수를 소괄호로 감쌌는데 LEFT(...RIGHT) 큰 괄호를 쓰지 않았습니다."],
-  varnothing_literal_text: ["공집합 기호가 일반 텍스트로 입력됨", "'$\\varnothing$'이 수식 개체가 아니라 일반 텍스트로 들어가 있어 기호(∅) 대신 문자 그대로 표시됩니다."],
   equation_case_mismatch: ["수식 명령어 대소문자 혼용", "같은 파일 안에서 정식 대문자 명령어(TIMES 등)와 소문자 오타가 섞여 있습니다."],
   multi_answer_items: ["복수 정답 문항 (참고용, 오류 아님)", "정답 칸에 값이 두 개 이상 들어있습니다. 규칙에 따라 오류로 처리하지 않습니다."],
   duplicate_twin_target: ["쌍둥이문항 값 중복(같은 파일 내)", "서로 다른 두 문항이 같은 쌍둥이문항 값을 가리키고 있습니다 — 1:1 매칭 위반. (파일 2개를 같이 올리면 아래 교차 검사에서 더 자세히 확인됩니다)"],
   radical_not_simplified: ["근호(sqrt/root) 미간소화 (확인 필요)", "근호 안의 수가 제곱수 인수를 포함하고 있어 더 간단히 나타낼 수 있습니다. 해설의 중간 풀이 과정에서 의도적으로 나타난 형태일 수 있으니, 실제로 최종 답·선택지인지 확인해 주세요."],
+  required_field_missing: ["필수 필드 누락", "문항id/본문/정답/지식단위/난이도/해설 중 비어 있는 항목이 있습니다."],
+  item_id_format: ["문항id 형식 이상", "[접두어]+지식단위+변형문자+난이도+\"-\"+일련번호 패턴과 다릅니다."],
+  knowledge_unit_format: ["지식단위 형식 이상", "예상 패턴(예: G0C1S3A)과 다릅니다."],
+  difficulty_format: ["난이도 형식 이상", "1~3 사이의 정수가 아닙니다."],
+  choice_gap: ["선택지 번호 사이 공백", "중간 선택지가 비어 있는데 그 뒤 선택지는 채워져 있습니다 (번호를 당겨서 채워야 함)."],
+  answer_points_to_empty_choice: ["정답이 빈 선택지를 가리킴", "정답 번호에 해당하는 선택지 칸이 비어 있습니다."],
+  answer_format_invalid: ["정답 형식 이상", "선택지가 있는 문항인데 정답이 1~5 범위의 선택지 번호가 아닙니다."],
+  placeholder_text: ["미완성 표시 텍스트", "TODO/미정/수정필요/xxx/999/???/루트 등 미완성으로 보이는 표시가 본문·해설에 남아 있습니다."],
+  unrecognized_equation_tokens: ["알 수 없는 수식 표현", "수식 변환기가 인식하지 못한 키워드가 있습니다 — 오타이거나 아직 지원하지 않는 표현일 수 있습니다."],
+  conclusion_answer_mismatch: ["해설 결론과 정답 불일치 (확인 필요)", "해설 마지막 줄의 결론값과 정답이 가리키는 선택지 값이 다른 것으로 보입니다. 표기 차이로 인한 오탐일 수 있으니 직접 확인해 주세요."],
+  duplicate_body_text: ["본문 완전 중복", "서로 다른 문항인데 본문 내용이 글자 하나 다르지 않게 완전히 동일합니다 — 복사 후 숫자를 안 고친 실수일 수 있습니다."],
 };
 const TWIN_LABELS = {
+  duplicate_ids_cross_file: ["문항id 중복 (업로드한 파일 전체)", "업로드한 모든 파일을 통틀어 같은 문항id가 두 번 이상 등장합니다."],
   twin_not_found_in_general: ["쌍둥이문항id가 일반문항 파일에 없음", ""],
   twin_missing_in_assessment: ["쌍둥이문항 칸이 비어있음", "평가문항 파일의 각 문항에는 쌍둥이문항id가 있어야 합니다."],
   twin_collisions: ["쌍둥이문항 중복 참조", "같은 일반문항이 두 개 이상의 평가문항에서 쌍둥이로 지정되어 있습니다 — 1:1 매칭 위반."],
   general_has_nonempty_twin_field: ["일반문항 파일에 쌍둥이문항 값이 들어있음", "일반문항 파일은 이 칸이 비어있는 것이 정상입니다."],
+  twin_ku_mismatch: ["쌍둥이문항과 지식단위 불일치", "쌍둥이로 지정된 두 문항의 지식단위 코드가 서로 다릅니다."],
+  twin_difficulty_mismatch: ["쌍둥이문항과 난이도 불일치", "쌍둥이로 지정된 두 문항의 난이도 값이 서로 다릅니다."],
 };
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
+
+// Turns one cell's raw value (mixed plain text + [EQ:...] + [IMG:ref]
+// markers, as produced by segsToStr) into an HTML fragment: text is
+// escaped, equations are rendered with KaTeX, images are shown inline
+// via their extracted blob URL.
+function renderValueToHtml(raw, imageUrls) {
+  if (!raw) return "";
+  const re = /\[EQ:(.*?)\]|\[IMG:([^\]]*)\]|\[IMG\]/gs;
+  let html = "";
+  let last = 0;
+  let m;
+  while ((m = re.exec(raw))) {
+    html += esc(raw.slice(last, m.index));
+    if (m[0].startsWith("[EQ:")) {
+      const { latex } = eqnScriptToLatex(m[1]);
+      try {
+        html += window.katex
+          ? katex.renderToString(latex, { throwOnError: false, strict: "ignore" })
+          : `<code>${esc(latex)}</code>`;
+      } catch {
+        html += `<code class="eqn-fallback">${esc(m[1])}</code>`;
+      }
+    } else {
+      const ref = m[2];
+      const url = ref && imageUrls && imageUrls[ref];
+      html += url
+        ? `<img class="item-img" src="${url}" alt="문항 그림" loading="lazy">`
+        : `<span class="img-missing">[그림 표시 불가]</span>`;
+    }
+    last = re.lastIndex;
+  }
+  html += esc(raw.slice(last));
+  return html;
+}
+
+function renderItemPreview(item, imageUrls, fileIdx) {
+  const iid = getField(item, "문항id") || "(id 없음)";
+  const field = (label) => {
+    const vals = getFieldAll(item, label);
+    if (!vals) return null;
+    return vals.map(v => renderValueToHtml(v, imageUrls)).join(" ");
+  };
+  const rows = [
+    ["본문", field("본문")],
+    ["선택지1", field("선택지1")], ["선택지2", field("선택지2")],
+    ["선택지3", field("선택지3")], ["선택지4", field("선택지4")], ["선택지5", field("선택지5")],
+    ["정답", field("정답")],
+    ["해설1", field("해설1")], ["해설2", field("해설2")], ["해설3", field("해설3")],
+    ["지식단위", field("지식단위")], ["난이도", field("난이도")],
+    ["학습행동영역", field("학습행동영역")], ["쌍둥이문항", field("쌍둥이문항")],
+  ].filter(([, v]) => v !== null && v !== "");
+
+  const body = rows.map(([label, html]) =>
+    `<div class="preview-row"><div class="preview-label">${esc(label)}</div><div class="preview-value">${html}</div></div>`
+  ).join("");
+
+  return `
+    <details class="preview-item">
+      <summary>#${item.table_index + 1} <span class="preview-id">${esc(iid)}</span></summary>
+      <div class="preview-body">
+        ${body}
+      </div>
+    </details>`;
+}
+
+function renderPreviewSection(data, fileIdx) {
+  const items = data.items.map(it => renderItemPreview(it, data.imageUrls || {}, fileIdx)).join("");
+  return `
+    <details class="preview-panel">
+      <summary>${esc(data.name)}.hwpx — 문항 미리보기 (${data.items.length}개, 클릭해서 펼치기)</summary>
+      <div class="preview-list">${items}</div>
+    </details>`;
+}
+
+function renderBacktickPanel(data, fileIdx) {
+  if (!data.backtickOccurrences.length) {
+    return `
+      <details class="bt-panel">
+        <summary>${esc(data.name)}.hwpx — 백틱(\`) 스페이싱 수정 (해당 없음)</summary>
+        <p class="empty-note" style="padding:0 20px 16px;">이 파일에는 수식 안 백틱 스페이싱이 없습니다.</p>
+      </details>`;
+  }
+  const rows = data.backtickOccurrences.map((occ, i) => {
+    const before = occ.fullScript.slice(0, occ.start);
+    const after = occ.fullScript.slice(occ.end);
+    const contextHtml = `${esc(before)}<mark class="bt-mark">${esc("`".repeat(occ.length))}</mark>${esc(after)}`;
+    return `
+      <div class="bt-row">
+        <input type="checkbox" class="bt-check" data-file-idx="${fileIdx}" data-occ-idx="${i}" checked>
+        <div class="bt-row-body">
+          <div class="bt-row-meta">#${occ.tableIndex + 1} · 현재 백틱 ${occ.length}개</div>
+          <div class="bt-row-eq">${contextHtml}</div>
+        </div>
+        <div class="bt-row-target">
+          <span>→</span>
+          <input type="number" min="0" max="9" value="${occ.length > 1 ? 1 : occ.length}"
+            class="bt-target-count" data-file-idx="${fileIdx}" data-occ-idx="${i}">
+          <span>개</span>
+        </div>
+      </div>`;
+  }).join("");
+
+  return `
+    <details class="bt-panel">
+      <summary>${esc(data.name)}.hwpx — 백틱(\`) 스페이싱 수정 (${data.backtickOccurrences.length}곳, 클릭해서 펼치기)</summary>
+      <div class="bt-controls">
+        <button type="button" class="bt-toggle-all" data-file-idx="${fileIdx}" data-action="all">전체 선택</button>
+        <button type="button" class="bt-toggle-all" data-file-idx="${fileIdx}" data-action="none">전체 해제</button>
+        <span>선택 항목을 한 번에</span>
+        <input type="number" min="0" max="9" value="1" class="bt-bulk-fill" data-file-idx="${fileIdx}">
+        <span>개로 채우기</span>
+        <button type="button" class="bt-fill-btn" data-file-idx="${fileIdx}">채우기</button>
+      </div>
+      <p class="rule-desc" style="padding:0 20px 6px;">
+        각 항목의 개별 <b>"→ [개수]"</b> 칸을 직접 고쳐도 됩니다 — 위 "채우기"는 선택된 항목 전체를 한 번에 같은 값으로 맞추는 편의 기능일 뿐, 항목마다 다른 값을 넣고 싶으면 그 항목의 칸만 따로 바꾸면 됩니다.
+      </p>
+      <div class="bt-list">${rows}</div>
+      <div class="bt-controls" style="padding-top:4px;">
+        <button type="button" class="bt-apply-btn" data-file-idx="${fileIdx}">선택 항목 일괄 수정 후 다운로드</button>
+      </div>
+      <div class="bt-status" data-file-idx="${fileIdx}"></div>
+    </details>`;
+}
+
+async function handleBacktickApply(fileIdx) {
+  const data = lastExtracted[fileIdx];
+  if (!data) return;
+  const statusEl2 = document.querySelector(`.bt-status[data-file-idx="${fileIdx}"]`);
+  const checks = document.querySelectorAll(`.bt-check[data-file-idx="${fileIdx}"]:checked`);
+  const selected = Array.from(checks).map(c => {
+    const occIdx = parseInt(c.dataset.occIdx, 10);
+    const occ = data.backtickOccurrences[occIdx];
+    const input = document.querySelector(`.bt-target-count[data-file-idx="${fileIdx}"][data-occ-idx="${occIdx}"]`);
+    const targetCount = Math.max(0, parseInt(input?.value ?? "1", 10) || 0);
+    return { ...occ, targetCount };
+  });
+
+  if (statusEl2) { statusEl2.className = "bt-status"; statusEl2.textContent = `${selected.length}개 항목 수정 중…`; }
+  try {
+    if (selected.length === 0) throw new Error("선택된 항목이 없습니다.");
+    applyBacktickFixes(selected);
+    const blob = await regenerateHwpxBlob(data);
+    triggerDownload(blob, `${data.name}_백틱수정.hwpx`);
+    if (statusEl2) { statusEl2.className = "bt-status ok"; statusEl2.textContent = `완료 — ${selected.length}개 항목을 각자 지정한 개수로 수정한 새 파일을 다운로드했습니다. (원본은 그대로입니다)`; }
+  } catch (err) {
+    if (statusEl2) { statusEl2.className = "bt-status err"; statusEl2.textContent = `오류: ${err.message || err}`; }
+  }
+}
+/* NOTE: the click-delegation listener for this panel (bt-toggle-all /
+ * bt-apply-btn) lives down in the "UI wiring" section below, alongside the
+ * other DOM event listeners - kept separate from the pure render/string
+ * functions above so this file's non-DOM logic stays easy to unit-test
+ * outside a browser (see the project's Node test harness). */
+
 
 function renderCheckBlock(key, lines, labels, infoKeys) {
   const [title, desc] = labels[key] || [key, ""];
@@ -666,12 +1512,16 @@ function renderCheckBlock(key, lines, labels, infoKeys) {
 
 function renderFileReport(data, findings) {
   const order = [
-    "duplicate_ids", "id_component_mismatch", "invalid_behavior_code",
-    "duplicate_choice_values", "choice_order_violations", "paren_wrapped_fraction",
-    "varnothing_literal_text", "equation_case_mismatch", "multi_answer_items",
-    "duplicate_twin_target", "radical_not_simplified",
+    "required_field_missing", "item_id_format", "duplicate_ids", "id_component_mismatch",
+    "knowledge_unit_format", "difficulty_format", "invalid_behavior_code",
+    "duplicate_choice_values", "choice_order_violations", "choice_gap",
+    "answer_points_to_empty_choice", "answer_format_invalid",
+    "paren_wrapped_fraction", "equation_case_mismatch",
+    "unrecognized_equation_tokens", "placeholder_text", "multi_answer_items",
+    "duplicate_twin_target", "radical_not_simplified", "conclusion_answer_mismatch",
+    "duplicate_body_text",
   ];
-  const blocks = order.map(k => renderCheckBlock(k, findings[k] || [], RULE_LABELS, ["multi_answer_items", "radical_not_simplified"])).join("");
+  const blocks = order.map(k => renderCheckBlock(k, findings[k] || [], RULE_LABELS, ["multi_answer_items", "radical_not_simplified", "conclusion_answer_mismatch"])).join("");
   return `
     <div class="file-report">
       <h3>${esc(data.name)}.hwpx <span class="count">— 문항 ${data.items.length}개</span></h3>
@@ -679,12 +1529,17 @@ function renderFileReport(data, findings) {
     </div>`;
 }
 
-function renderTwinReport(generalData, assessmentData, findings) {
-  const order = ["twin_not_found_in_general", "twin_missing_in_assessment", "twin_collisions", "general_has_nonempty_twin_field"];
+function renderCrossFileReport(findings, generalSets, assessmentSets) {
+  const order = [
+    "duplicate_ids_cross_file", "twin_not_found_in_general", "twin_missing_in_assessment",
+    "twin_collisions", "general_has_nonempty_twin_field", "twin_ku_mismatch", "twin_difficulty_mismatch",
+  ];
   const blocks = order.map(k => renderCheckBlock(k, findings[k] || [], TWIN_LABELS, [])).join("");
+  const genNames = generalSets.map(d => esc(d.name)).join(", ") || "(없음)";
+  const asmNames = assessmentSets.map(d => esc(d.name)).join(", ") || "(없음)";
   return `
     <div class="file-report">
-      <div class="twin-header">쌍둥이문항 교차 검사 · ${esc(generalData.name)} (일반) ↔ ${esc(assessmentData.name)} (평가)</div>
+      <div class="twin-header">전체 파일 교차 검사 · 일반문항으로 인식: ${genNames} / 평가문항으로 인식: ${asmNames}</div>
       ${blocks}
     </div>`;
 }
@@ -700,6 +1555,7 @@ const statusEl = document.getElementById("status");
 const resultsEl = document.getElementById("results");
 
 let selectedFiles = [];
+let lastExtracted = []; // populated after each run; lets bt-panel button handlers find live data
 
 function renderFileList() {
   fileListEl.innerHTML = selectedFiles.map((f, i) => {
@@ -723,7 +1579,6 @@ function renderFileList() {
 function addFiles(fileArr) {
   for (const f of fileArr) {
     if (!/\.hwpx$/i.test(f.name)) continue;
-    if (selectedFiles.length >= 2) break;
     selectedFiles.push(f);
   }
   renderFileList();
@@ -740,6 +1595,46 @@ fileInput.addEventListener("change", e => addFiles(Array.from(e.target.files)));
   e.preventDefault(); dropzone.classList.remove("drag");
 }));
 dropzone.addEventListener("drop", e => addFiles(Array.from(e.dataTransfer.files)));
+
+// Delegated click handling for the backtick-fix panel (rendered later via
+// innerHTML, so listeners must be attached to a stable ancestor, not the
+// buttons themselves).
+// Number inputs intercept mouse-wheel scroll to bump their value up/down
+// while focused - surprising when the person just wants to scroll the
+// (long) backtick fix-list past one. Block that specific behavior for
+// this panel's number inputs without blocking the page/list scroll itself.
+document.addEventListener("wheel", (e) => {
+  const el = e.target;
+  if (el && el.tagName === "INPUT" && el.type === "number" &&
+      (el.classList.contains("bt-target-count") || el.classList.contains("bt-bulk-fill"))) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener("click", (e) => {
+  const toggleBtn = e.target.closest(".bt-toggle-all");
+  if (toggleBtn) {
+    const idx = toggleBtn.dataset.fileIdx;
+    const checked = toggleBtn.dataset.action === "all";
+    document.querySelectorAll(`.bt-check[data-file-idx="${idx}"]`).forEach(c => { c.checked = checked; });
+    return;
+  }
+  const applyBtn = e.target.closest(".bt-apply-btn");
+  if (applyBtn) {
+    handleBacktickApply(parseInt(applyBtn.dataset.fileIdx, 10));
+    return;
+  }
+  const fillBtn = e.target.closest(".bt-fill-btn");
+  if (fillBtn) {
+    const idx = fillBtn.dataset.fileIdx;
+    const bulkInput = document.querySelector(`.bt-bulk-fill[data-file-idx="${idx}"]`);
+    const value = bulkInput?.value ?? "1";
+    document.querySelectorAll(`.bt-check[data-file-idx="${idx}"]:checked`).forEach(c => {
+      const target = document.querySelector(`.bt-target-count[data-file-idx="${idx}"][data-occ-idx="${c.dataset.occIdx}"]`);
+      if (target) target.value = value;
+    });
+  }
+});
 
 runBtn.addEventListener("click", async () => {
   runBtn.disabled = true;
@@ -759,27 +1654,19 @@ runBtn.addEventListener("click", async () => {
 
     let html = "";
     const singleFindings = extracted.map(d => checkSingleFile(d));
-    extracted.forEach((d, i) => { html += renderFileReport(d, singleFindings[i]); });
+    lastExtracted = extracted;
+    extracted.forEach((d, i) => { html += renderPreviewSection(d, i) + renderBacktickPanel(d, i) + renderFileReport(d, singleFindings[i]); });
 
-    if (extracted.length === 2) {
+    if (extracted.length >= 2) {
       const ratios = extracted.map(twinFillRatio);
-      let general, assessment;
-      // Whichever file has its 쌍둥이문항 column filled in far more often is
-      // treated as the assessment (평가) file. A general-item file may still
-      // have the column present but left blank, so "which one is filled more"
-      // is a more robust signal than "which one has the column at all".
-      if (ratios[0] > ratios[1] + 0.1) { assessment = extracted[0]; general = extracted[1]; }
-      else if (ratios[1] > ratios[0] + 0.1) { assessment = extracted[1]; general = extracted[0]; }
-      selectedFiles[0]._hasTwin = ratios[0] > 0.5;
-      selectedFiles[1]._hasTwin = ratios[1] > 0.5;
+      extracted.forEach((d, i) => { selectedFiles[i]._hasTwin = ratios[i] > 0.5; });
       renderFileList();
-      if (general && assessment) {
-        const twinFindings = checkTwinPair(general, assessment);
-        html += renderTwinReport(general, assessment, twinFindings);
+      const { findings, generalSets, assessmentSets } = checkAllFilesCross(extracted);
+      if (assessmentSets.length > 0) {
+        html += renderCrossFileReport(findings, generalSets, assessmentSets);
       } else {
-        html += `<div class="panel"><p class="empty-note">두 파일 중 어느 쪽이 평가문항인지 자동으로 판별하지 못했습니다
-        (쌍둥이문항 칸의 값 채움 비율이 비슷함) — 쌍둥이문항 교차 검사는 건너뜁니다. 다만 각 파일 안에서의
-        쌍둥이문항 값 중복은 위 개별 파일 결과의 "쌍둥이문항 값 중복(같은 파일 내)" 항목에서 계속 확인됩니다.</p></div>`;
+        html += `<div class="panel"><p class="empty-note">업로드한 파일 중 쌍둥이문항 칸이 채워진(평가문항으로 보이는) 파일이 없어서
+        전체 교차 검사는 건너뜁니다. 문항id 중복은 각 파일 개별 결과에서 계속 확인됩니다.</p></div>`;
       }
     }
 
