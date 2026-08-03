@@ -621,7 +621,7 @@ const EQN_GLUED_KEYWORD_RE = new RegExp(`^(${EQN_GLUED_KEYWORD_NAMES.join("|")})
 // suspect, so this checks the full keyword list, not a couple of examples.
 const EQN_ALL_KEYWORD_NAMES_SORTED = [...EQN_GLUED_KEYWORD_NAMES].sort((a, b) => b.length - a.length);
 function findGluedShorthand(eqStr) {
-  const s = eqStr.replace(/`/g, "");
+  const s = eqStr.replace(/`/g, ""); // backtick does not reliably act as a real separator after a style keyword (rm/it/bf/sf) either, per direct testing - so it should NOT prevent this check from firing
   const runs = s.match(/[A-Za-z0-9]+/g) || [];
   const found = [];
   for (const run of runs) {
@@ -632,6 +632,13 @@ function findGluedShorthand(eqStr) {
         found.push(run);
         break;
       }
+    }
+    // A style keyword (rm/it/bf/sf) glued directly to a following letter
+    // with no space, e.g. "rmA" instead of "rm A" - these are always
+    // lowercase-only commands in practice (see the earlier BF/bf mix-up
+    // fix), so only the exact-lowercase prefix counts here.
+    if (/^(rm|it|bf|sf)[A-Za-z]/.test(run)) {
+      found.push(run);
     }
   }
   return [...new Set(found)];
