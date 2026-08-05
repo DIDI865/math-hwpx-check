@@ -621,7 +621,7 @@ const EQN_GLUED_KEYWORD_RE = new RegExp(`^(${EQN_GLUED_KEYWORD_NAMES.join("|")})
 // suspect, so this checks the full keyword list, not a couple of examples.
 const EQN_ALL_KEYWORD_NAMES_SORTED = [...EQN_GLUED_KEYWORD_NAMES].sort((a, b) => b.length - a.length);
 function findGluedShorthand(eqStr) {
-  const s = eqStr.replace(/`/g, ""); // backtick does not reliably act as a real separator after a style keyword (rm/it/bf/sf) either, per direct testing - so it should NOT prevent this check from firing
+  const s = eqStr.replace(/`/g, " "); // backtick is a legitimate spacing char here too (confirmed: the earlier report of it "not working" after rm/it/bf/sf turned out to be a stale browser cache, not a real conversion problem) - so only truly-glued text with NO separator at all should be flagged
   const runs = s.match(/[A-Za-z0-9]+/g) || [];
   const found = [];
   for (const run of runs) {
